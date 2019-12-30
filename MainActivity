@@ -1,0 +1,74 @@
+mport androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import java.util.Random;
+
+import me.itangqi.waveloadingview.WaveLoadingView;
+
+public class MainActivity extends AppCompatActivity {
+
+    int sayi;
+
+    Button btn_grafik;
+    WaveLoadingView waveLoadingView;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        btn_grafik=findViewById(R.id.btn_goster);
+        waveLoadingView =findViewById(R.id.waveloading);
+        waveLoadingView.setProgressValue(0);
+        waveLoadingView.setAnimDuration(3000);
+
+
+        btn_grafik.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                start();
+                waveLoadingView.startAnimation();
+
+            }
+        });
+
+    }
+
+    public void start() {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sayi += 5;
+
+                waveLoadingView.setProgressValue(sayi);
+
+                if (sayi<=40){
+                    waveLoadingView.setTopTitle("% "+sayi);
+                }else if(sayi<=60&&sayi>40){
+                    waveLoadingView.setCenterTitle("% "+sayi);
+                    waveLoadingView.setTopTitle("");
+                }else {
+                    waveLoadingView.setBottomTitle("% " +sayi);
+                    waveLoadingView.setCenterTitle("");
+                }
+                if (sayi < 100) {
+                    handler.postDelayed(this, generateDelay());
+                }
+            }
+        }, generateDelay());
+    }
+
+    private Random random = new Random();
+
+    private int generateDelay() {
+        return random.nextInt(1000);
+    }
+}
